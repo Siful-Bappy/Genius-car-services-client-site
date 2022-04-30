@@ -3,7 +3,6 @@ import "./Service.css";
 
 const Service = ({service}) => {
     const {name, img, description, price} = service;
-    // console.log(service);
     return (
         <div className='service'>
             <img className='w-100' src={img} alt="" />
