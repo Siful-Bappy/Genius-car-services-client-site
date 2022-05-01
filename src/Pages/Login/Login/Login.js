@@ -1,9 +1,10 @@
 import React, { useRef } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import auth from "../../../firebase.init";
 import SocialLogin from "./SocialLogin/SocialLogin";
+import { async } from "@firebase/util";
 
 const Login = () => {
     const emailRef = useRef("");
@@ -16,11 +17,10 @@ const Login = () => {
       loading,
       error,
     ] = useSignInWithEmailAndPassword(auth);
+    const [sendPasswordResetEmail, sending] = useSendPasswordResetEmail(auth);
     let errorElement;
     if (error) {
-      errorElement = <div>
-      <p className="text-danger">Error: {error?.message}</p>
-    </div>
+      errorElement = <p className="text-danger">Error: {error?.message}</p>
   }
     const location = useLocation();
 
@@ -30,6 +30,11 @@ const Login = () => {
     }
     if(user) {
       navigate(from, { replace: true });
+    }
+    const resetPassword = async() => {
+      const email = emailRef.current.value;
+      await sendPasswordResetEmail(email);
+      alert('Sent email');
     }
     const handleSubmit = event => {
         const email = emailRef.current.value;
@@ -51,15 +56,13 @@ const Login = () => {
           <Form.Label>Password</Form.Label>
           <Form.Control ref={passwordRef} type="password" placeholder="Password" required/>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-          <Form.Check type="checkbox" label="Check me out" />
-        </Form.Group>
-        <Button  variant="primary" type="submit">
-          Submit
+        <Button  variant="primary w-50 d-block p-2 mb-2 mx-auto" type="submit">
+          Login
         </Button>
       </Form>
       {errorElement}
-      <p>New to genius car<Link to={"/register"} onClick={navigateRegister} className="text-danger pe-auto text-decoration-none">Please Register</Link></p>
+      <p>New to genius car<Link to={"/register"} onClick={navigateRegister} className="text-primary pe-auto text-decoration-none">Please Register</Link></p>
+      <p>Forget Password<Link to={"/register"} onClick={resetPassword} className="text-primary pe-auto text-decoration-none">Reset Password</Link></p>
       <SocialLogin></SocialLogin>
     </div>
   );
