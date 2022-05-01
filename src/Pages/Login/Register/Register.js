@@ -5,8 +5,10 @@ import { useCreateUserWithEmailAndPassword, useUpdateProfile } from 'react-fireb
 import auth from '../../../firebase.init';
 import SocialLogin from '../Login/SocialLogin/SocialLogin';
 import Loading from '../../Shared/Loading/Loading';
+import PageTitle from '../../Shared/PageTitle/PageTitle';
 
 const Register = () => {
+    <PageTitle title={"Register"}></PageTitle>
     const [agree, setAgree] = useState(false);
     const [ createUserWithEmailAndPassword, user, loading, error ] = useCreateUserWithEmailAndPassword(auth, {sendEmailVerification: true});
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);

@@ -8,8 +8,11 @@ import { async } from "@firebase/util";
 import Loading from "../../Shared/Loading/Loading";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Helmet } from "react-helmet-async";
+import PageTitle from "../../Shared/PageTitle/PageTitle";
 
 const Login = () => {
+  <PageTitle title={"Login"}></PageTitle>
     const emailRef = useRef("");
     const passwordRef = useRef("");
     const navigate = useNavigate();
