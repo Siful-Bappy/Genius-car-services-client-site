@@ -1,36 +1,33 @@
 import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "./Register.css";
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useCreateUserWithEmailAndPassword, useUpdateProfile } from 'react-firebase-hooks/auth';
 import auth from '../../../firebase.init';
 import SocialLogin from '../Login/SocialLogin/SocialLogin';
 
 const Register = () => {
     const [agree, setAgree] = useState(false);
-    const [
-        createUserWithEmailAndPassword,
-        user,
-        loading,
-        error,
-      ] = useCreateUserWithEmailAndPassword(auth);
+    const [ createUserWithEmailAndPassword, user, loading, error ] = useCreateUserWithEmailAndPassword(auth, {sendEmailVerification: true});
+    const [updateProfile, updating, updateError] = useUpdateProfile(auth);
     const navigate = useNavigate();
     const navigateLogin = event => {
         navigate("/login");
     }
-    const handleRegister = event => {
+    
+    const handleRegister = async (event) => {
+        event.preventDefault();
         const name = event.target.name.value;
         const email = event.target.email.value;
         const password = event.target.password.value;
-        console.log(name, email, password);
-        // this is one system of set the tearms and conditions
         // const agree = event.target.terms.checked;
-        if(agree) {
-            createUserWithEmailAndPassword(email, password)
-        }
-        event.preventDefault();
+
+        await createUserWithEmailAndPassword(email, password);
+        await updateProfile({ displayName: name });
+        console.log('Updated profile');
+        navigate('/home');
     }
-    if(user) {
-        navigate("/home");
+    if (user) {
+        console.log('user', user);  
     }
     return (
         <div className='register-form'>
@@ -40,8 +37,8 @@ const Register = () => {
                 <input  type="email" name="email" id="" placeholder='Email Address' required/>
                 <input  type="password" name="password" id="" placeholder='Your Password' required/>
 
-                <div class="form-check">
-                <input onClick={() => setAgree(!agree)} class="form-check-input" type="checkbox" name="terms" value="" id='terms'/>
+                <div className="form-check">
+                <input onClick={() => setAgree(!agree)} className="form-check-input" type="checkbox" name="terms" value="" id='terms'/>
                 {/* <label className={agree? "ps-2 text-primary" : "ps-2 text-danger"} htmlFor="terms">Accept Genius Car Terms and Conditions</label> */}
                 <label className={`2px ${agree ? "text" : "text-danger"}`} htmlFor="terms">Accept Genius Car Terms and Conditions</label>
                 </div>
