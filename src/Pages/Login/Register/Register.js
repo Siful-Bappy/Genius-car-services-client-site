@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "./Register.css";
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
@@ -6,6 +6,7 @@ import auth from '../../../firebase.init';
 import SocialLogin from '../Login/SocialLogin/SocialLogin';
 
 const Register = () => {
+    const [agree, setAgree] = useState(false);
     const [
         createUserWithEmailAndPassword,
         user,
@@ -21,8 +22,11 @@ const Register = () => {
         const email = event.target.email.value;
         const password = event.target.password.value;
         console.log(name, email, password);
-
-        createUserWithEmailAndPassword(email, password)
+        // this is one system of set the tearms and conditions
+        // const agree = event.target.terms.checked;
+        if(agree) {
+            createUserWithEmailAndPassword(email, password)
+        }
         event.preventDefault();
     }
     if(user) {
@@ -37,10 +41,11 @@ const Register = () => {
                 <input  type="password" name="password" id="" placeholder='Your Password' required/>
 
                 <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="terms" value="" id='terms'/>
-                <label htmlFor="terms">Accept Genius Car Terms and Conditions</label>
+                <input onClick={() => setAgree(!agree)} class="form-check-input" type="checkbox" name="terms" value="" id='terms'/>
+                {/* <label className={agree? "ps-2 text-primary" : "ps-2 text-danger"} htmlFor="terms">Accept Genius Car Terms and Conditions</label> */}
+                <label className={`2px ${agree ? "text" : "text-danger"}`} htmlFor="terms">Accept Genius Car Terms and Conditions</label>
                 </div>
-                <input className='bg-primary rounded w-50 mx-auto border-0 text-white mt-2' type="submit" value="Register" />
+                <input disabled={!agree} className='bg-primary rounded w-50 mx-auto border-0 text-white mt-2' type="submit" value="Register" />
             </form>
             <p>Already have an account?<Link to={"/login"} onClick={navigateLogin} className="text-primary pe-auto text-decoration-none">Please Register</Link></p>
             <SocialLogin></SocialLogin>
