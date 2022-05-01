@@ -16,6 +16,12 @@ const Login = () => {
       loading,
       error,
     ] = useSignInWithEmailAndPassword(auth);
+    let errorElement;
+    if (error) {
+      errorElement = <div>
+      <p className="text-danger">Error: {error?.message}</p>
+    </div>
+  }
     const location = useLocation();
 
     let from = location.state?.from?.pathname || "/";
@@ -52,6 +58,7 @@ const Login = () => {
           Submit
         </Button>
       </Form>
+      {errorElement}
       <p>New to genius car<Link to={"/register"} onClick={navigateRegister} className="text-danger pe-auto text-decoration-none">Please Register</Link></p>
       <SocialLogin></SocialLogin>
     </div>
